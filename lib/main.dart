@@ -240,14 +240,16 @@ class PageUn extends StatelessWidget {
 
 class PageDeux extends StatefulWidget {
   final String text;
-  PageDeux({Key key, @required this.text}) : super(key: key);
+  final int hScore;
+  PageDeux({Key key, this.text, this.hScore}) : super(key: key);
+  
+
 
   @override
   _PageDeuxState createState() => _PageDeuxState();
 }
 
 class _PageDeuxState extends State<PageDeux> {
-  int _healthScore = 100;
 
 
 
@@ -300,7 +302,7 @@ class _PageDeuxState extends State<PageDeux> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                   child: 
-                  Text("Aujourd'hui, je me sens: $_healthScore",
+                  Text("Aujourd'hui, je me sens: ${widget.hScore}",
                     style: TextStyle(fontSize: 16)
                   ),
               )
@@ -396,7 +398,7 @@ class SadWidget extends StatefulWidget {
 
 class _SadWidgetState extends State<SadWidget> {
   bool _isFavorited = false;
-  int _healthScore = 0;
+  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -408,14 +410,14 @@ class _SadWidgetState extends State<SadWidget> {
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
             icon: (_isFavorited ? Icon(Icons.do_not_disturb_alt, color: Colors.red) : Icon(Icons.do_not_disturb_alt, color: Colors.red[100])),
-            color: Colors.red[500],
-            onPressed: _toggleActif,
+            //color: Colors.red[500],
+            onPressed: _toggleActif, 
           ),
         ),
           SizedBox(
           width: 18,
           child: Container(
-            child: Text('$_healthScore'),
+            child: Text('$healthScore'),
           ),
         ),
       ],
@@ -424,12 +426,19 @@ class _SadWidgetState extends State<SadWidget> {
   void _toggleActif() {
   setState(() {
     if (_isFavorited) {
-      _healthScore += 10;
+      healthScore -= 1;
       _isFavorited = false;
     } else {
-      _healthScore -= 10;
+      healthScore += 1;
       _isFavorited = true;
     }
+    /*
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore),
+      ));
+      */
   });
 }
 }
@@ -442,7 +451,7 @@ class NeutralWidget extends StatefulWidget {
 
 class _NeutralWidgetState extends State<NeutralWidget> {
   bool _isFavorited = false;
-  int _healthScore = 41;
+  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -458,18 +467,31 @@ class _NeutralWidgetState extends State<NeutralWidget> {
             onPressed: _toggleFavorite,
           ),
         ),
+        SizedBox(
+          width: 18,
+          child: Container(
+            child: Text('$healthScore'),
+          ),
+        ),
       ],
     );
   }
   void _toggleFavorite() {
   setState(() {
     if (_isFavorited) {
-      _healthScore -= 1;
+      healthScore -= 2;
       _isFavorited = false;
     } else {
-      _healthScore += 1;
+      healthScore += 2;
       _isFavorited = true;
     }
+    /*
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore),
+      ));
+    */
   });
 }
 }
@@ -482,7 +504,7 @@ class HappyWidget extends StatefulWidget {
 
 class _HappyWidgetState extends State<HappyWidget> {
   bool _isFavorited = false;
-  int _healthScore = 41;
+  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -498,18 +520,31 @@ class _HappyWidgetState extends State<HappyWidget> {
             onPressed: _toggleFavorite,
           ),
         ),
+        SizedBox(
+          width: 18,
+          child: Container(
+            child: Text('$healthScore'),
+          ),
+        ),
       ],
     );
   }
   void _toggleFavorite() {
   setState(() {
     if (_isFavorited) {
-      _healthScore -= 1;
+      healthScore -= 3;
       _isFavorited = false;
     } else {
-      _healthScore += 1;
+      healthScore += 3;
       _isFavorited = true;
     }
+    /*
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore),
+      ));
+    */
   });
 }
 }
@@ -522,7 +557,7 @@ class CrossmarkWidget extends StatefulWidget {
 
 class _CrossmarkWidgetState extends State<CrossmarkWidget> {
   bool _isFavorited = false;
-  int _healthScore = 41;
+  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -537,18 +572,31 @@ class _CrossmarkWidgetState extends State<CrossmarkWidget> {
             onPressed: _toggleFavorite,
           ),
         ),
+        SizedBox(
+          width: 18,
+          child: Container(
+            child: Text('$healthScore'),
+          ),
+        ),
       ],
     );
   }
   void _toggleFavorite() {
   setState(() {
     if (_isFavorited) {
-      _healthScore -= 1;
+      healthScore -= 1;
       _isFavorited = false;
     } else {
-      _healthScore += 1;
+      healthScore += 1;
       _isFavorited = true;
     }
+    /*
+       Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore1),
+      ));
+    */
   });
 }
 }
@@ -561,7 +609,7 @@ class CheckmarkWidget extends StatefulWidget {
 
 class _CheckmarkWidgetState extends State<CheckmarkWidget> {
   bool _isFavorited = false;
-  int _healthScore = 41;
+  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -577,18 +625,31 @@ class _CheckmarkWidgetState extends State<CheckmarkWidget> {
             onPressed: _toggleFavorite,
           ),
         ),
+        SizedBox(
+          width: 18,
+          child: Container(
+            child: Text('$healthScore'),
+          ),
+        ),
       ],
     );
   }
   void _toggleFavorite() {
   setState(() {
     if (_isFavorited) {
-      _healthScore -= 1;
+      healthScore += 1;
       _isFavorited = false;
     } else {
-      _healthScore += 1;
+      healthScore -= 1;
       _isFavorited = true;
     }
+    /*
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore3),
+      ));
+    */
   });
 }
 }
