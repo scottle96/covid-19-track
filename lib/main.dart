@@ -238,9 +238,18 @@ class PageUn extends StatelessWidget {
 // Page Deux
 
 
-class PageDeux extends StatelessWidget {
+class PageDeux extends StatefulWidget {
   final String text;
   PageDeux({Key key, @required this.text}) : super(key: key);
+
+  @override
+  _PageDeuxState createState() => _PageDeuxState();
+}
+
+class _PageDeuxState extends State<PageDeux> {
+  int _healthScore = 100;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +282,7 @@ class PageDeux extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7.5),
                   child: 
-                  Text("Formulaire COVID-19 pour $text",
+                  Text("Formulaire COVID-19 pour ${widget.text}",
                     style: TextStyle(fontSize: 16)
                   ),
               )
@@ -291,7 +300,7 @@ class PageDeux extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                   child: 
-                  Text("Aujourd'hui, je me sens:",
+                  Text("Aujourd'hui, je me sens: $_healthScore",
                     style: TextStyle(fontSize: 16)
                   ),
               )
@@ -302,9 +311,9 @@ class PageDeux extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FavoriteWidget(),
-                FavoriteWidget(),
-                FavoriteWidget(),
+                SadWidget(),
+                NeutralWidget(),
+                HappyWidget(),
               ],
             ),
             Row(
@@ -319,9 +328,8 @@ class PageDeux extends StatelessWidget {
                       ),
                   )
                 ),
-                FavoriteWidget(),
-                FavoriteWidget(),
-                Container()
+                CrossmarkWidget(),
+                CheckmarkWidget(),
               ]
             ),
             Row(
@@ -336,8 +344,8 @@ class PageDeux extends StatelessWidget {
                       ),
                   )
                 ),
-                FavoriteWidget(),
-                FavoriteWidget(),
+                CrossmarkWidget(),
+                CheckmarkWidget(),
               ]
             ),
             Container(height:15),
@@ -362,7 +370,7 @@ class PageDeux extends StatelessWidget {
                       _naviguerPageUn(context);
                     },
                   )
-                ),
+                ),                
               ]
             ),
           ],
@@ -370,8 +378,9 @@ class PageDeux extends StatelessWidget {
       ),
     );
   }
+
   void _naviguerPageUn(BuildContext context) {
-  String texteTemp = text;
+  String texteTemp = widget.text;
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -380,14 +389,14 @@ class PageDeux extends StatelessWidget {
   }
 }
 
-class FavoriteWidget extends StatefulWidget {
+class SadWidget extends StatefulWidget {
   @override
-  _FavoriteWidgetState createState() => _FavoriteWidgetState();
+  _SadWidgetState createState() => _SadWidgetState();
 }
 
-class _FavoriteWidgetState extends State<FavoriteWidget> {
-  bool _isFavorited = true;
-  int _favoriteCount = 41;
+class _SadWidgetState extends State<SadWidget> {
+  bool _isFavorited = false;
+  int _healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -398,8 +407,54 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.star) : Icon(Icons.star_border)),
+            icon: (_isFavorited ? Icon(Icons.do_not_disturb_alt, color: Colors.red) : Icon(Icons.do_not_disturb_alt, color: Colors.red[100])),
             color: Colors.red[500],
+            onPressed: _toggleActif,
+          ),
+        ),
+          SizedBox(
+          width: 18,
+          child: Container(
+            child: Text('$_healthScore'),
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleActif() {
+  setState(() {
+    if (_isFavorited) {
+      _healthScore += 10;
+      _isFavorited = false;
+    } else {
+      _healthScore -= 10;
+      _isFavorited = true;
+    }
+  });
+}
+}
+
+
+class NeutralWidget extends StatefulWidget {
+  @override
+  _NeutralWidgetState createState() => _NeutralWidgetState();
+}
+
+class _NeutralWidgetState extends State<NeutralWidget> {
+  bool _isFavorited = false;
+  int _healthScore = 41;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_isFavorited ? Icon(Icons.brightness_1, color: Colors.yellow[600]) : Icon(Icons.brightness_1_outlined, color: Colors.yellow[300])),
+            //color: Colors.red[500],
             onPressed: _toggleFavorite,
           ),
         ),
@@ -409,21 +464,131 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
   void _toggleFavorite() {
   setState(() {
     if (_isFavorited) {
-      _favoriteCount -= 1;
+      _healthScore -= 1;
       _isFavorited = false;
     } else {
-      _favoriteCount += 1;
+      _healthScore += 1;
       _isFavorited = true;
     }
   });
 }
 }
-/*
-            RaisedButton(
-              textColor: Colors.white,
-              color: Colors.redAccent,
-              child: Text('Retourner à la page d''accueil'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-*/
+
+
+class HappyWidget extends StatefulWidget {
+  @override
+  _HappyWidgetState createState() => _HappyWidgetState();
+}
+
+class _HappyWidgetState extends State<HappyWidget> {
+  bool _isFavorited = false;
+  int _healthScore = 41;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_isFavorited ? Icon(Icons.brightness_1, color: Colors.green,) : Icon(Icons.brightness_1_outlined, color: Colors.green[100])),
+            //color: Colors.red[500],
+            onPressed: _toggleFavorite,
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleFavorite() {
+  setState(() {
+    if (_isFavorited) {
+      _healthScore -= 1;
+      _isFavorited = false;
+    } else {
+      _healthScore += 1;
+      _isFavorited = true;
+    }
+  });
+}
+}
+
+
+class CrossmarkWidget extends StatefulWidget {
+  @override
+  _CrossmarkWidgetState createState() => _CrossmarkWidgetState();
+}
+
+class _CrossmarkWidgetState extends State<CrossmarkWidget> {
+  bool _isFavorited = false;
+  int _healthScore = 41;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_isFavorited ? Icon(Icons.clear, color: Colors.black) : Icon(Icons.clear, color: Colors.black26)),
+            onPressed: _toggleFavorite,
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleFavorite() {
+  setState(() {
+    if (_isFavorited) {
+      _healthScore -= 1;
+      _isFavorited = false;
+    } else {
+      _healthScore += 1;
+      _isFavorited = true;
+    }
+  });
+}
+}
+
+
+class CheckmarkWidget extends StatefulWidget {
+  @override
+  _CheckmarkWidgetState createState() => _CheckmarkWidgetState();
+}
+
+class _CheckmarkWidgetState extends State<CheckmarkWidget> {
+  bool _isFavorited = false;
+  int _healthScore = 41;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_isFavorited ? Icon(Icons.check, color: Colors.black) : Icon(Icons.check, color: Colors.black26)),
+            //color: Colors.red[500],
+            onPressed: _toggleFavorite,
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleFavorite() {
+  setState(() {
+    if (_isFavorited) {
+      _healthScore -= 1;
+      _isFavorited = false;
+    } else {
+      _healthScore += 1;
+      _isFavorited = true;
+    }
+  });
+}
+}
