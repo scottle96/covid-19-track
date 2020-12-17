@@ -54,7 +54,10 @@ class PageAccueilState extends State<PageAccueil> {
           Container(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                    child:                  
+                    child:
+                    Hero(
+                      tag: 'dash',
+                      child:                   
                       Image.asset(
                         'images/logo.jpg',
                         width:300,
@@ -62,6 +65,7 @@ class PageAccueilState extends State<PageAccueil> {
                         fit:BoxFit.contain,
                         //alignment: Alignment.center,
                       ),
+                    ),
                 )
               ),
             Container(height:120),
@@ -147,7 +151,7 @@ class PageAccueilState extends State<PageAccueil> {
 
 class PageUn extends StatelessWidget {
   final String text;
-  PageUn({Key key, @required this.text}) : super(key: key);
+  PageUn({Key key, @required this.text, score}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -164,13 +168,17 @@ class PageUn extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                     child:                  
+                      Hero(
+                      tag: 'dash',
+                      child:                   
                       Image.asset(
                         'images/logo.jpg',
-                        width:310,
+                        width:150,
                         height:60,
                         fit:BoxFit.contain,
                         //alignment: Alignment.center,
                       ),
+                    ),
                 )
               )
               ]
@@ -251,6 +259,13 @@ class PageDeux extends StatefulWidget {
 
 class _PageDeuxState extends State<PageDeux> {
 
+  static int healthScore = 0;
+  
+  static int questionOne = 0;
+
+  static int questionTwo = 0;
+
+  static int questionThree = 0;
 
 
   @override
@@ -268,13 +283,17 @@ class _PageDeuxState extends State<PageDeux> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                     child:                  
+                      Hero(
+                      tag: 'dash',
+                      child:                   
                       Image.asset(
                         'images/logo.jpg',
-                        width:310,
+                        width:75,
                         height:60,
                         fit:BoxFit.contain,
                         //alignment: Alignment.center,
                       ),
+                    ),
                 )
               )
               ]
@@ -302,7 +321,7 @@ class _PageDeuxState extends State<PageDeux> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                   child: 
-                  Text("Aujourd'hui, je me sens: ${widget.hScore}",
+                  Text("Aujourd'hui, je me sens:",
                     style: TextStyle(fontSize: 16)
                   ),
               )
@@ -346,8 +365,8 @@ class _PageDeuxState extends State<PageDeux> {
                       ),
                   )
                 ),
-                CrossmarkWidget(),
-                CheckmarkWidget(),
+                CrossmarkWidget2(),
+                CheckmarkWidget2(),
               ]
             ),
             Container(height:15),
@@ -367,12 +386,37 @@ class _PageDeuxState extends State<PageDeux> {
                           ),
                     child: Text('Soumettre',
                             style: TextStyle(fontSize: 16)),
+                    
                     onPressed: () {
-                      Navigator.pop(context);
-                      _naviguerPageUn(context);
-                    },
+                      if(questionOne > 0 && questionTwo > 0 && questionThree > 0)
+                      {
+                        Navigator.pop(context);
+                        _naviguerPageUn(context);
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                // Retrieve the text the user has entered by using the
+                                // TextEditingController.
+                                content: Text("${decision(_PageDeuxState.healthScore)}"),
+                              );
+                            },
+                          );
+                      }else{
+                          return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                // Retrieve the text the user has entered by using the
+                                // TextEditingController.
+                                content: Text("Veuillez remplir tous les champs."),
+                              );
+                            },
+                          );
+                        }
+                      }                 
                   )
-                ),                
+                ),
               ]
             ),
           ],
@@ -386,7 +430,7 @@ class _PageDeuxState extends State<PageDeux> {
   Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PageUn(text: texteTemp),
+        builder: (context) => PageUn(text: texteTemp, score: healthScore),
       ));
   }
 }
@@ -397,8 +441,6 @@ class SadWidget extends StatefulWidget {
 }
 
 class _SadWidgetState extends State<SadWidget> {
-  bool _isFavorited = false;
-  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -409,28 +451,24 @@ class _SadWidgetState extends State<SadWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.do_not_disturb_alt, color: Colors.red) : Icon(Icons.do_not_disturb_alt, color: Colors.red[100])),
+            icon: (_PageDeuxState.questionOne==1 ? Icon(Icons.brightness_1, color: Colors.red) : Icon(Icons.brightness_1_outlined, color: Colors.red[100])),
             //color: Colors.red[500],
             onPressed: _toggleActif, 
-          ),
-        ),
-          SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$healthScore'),
           ),
         ),
       ],
     );
   }
   void _toggleActif() {
-  setState(() {
-    if (_isFavorited) {
-      healthScore -= 1;
-      _isFavorited = false;
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+    if (_PageDeuxState.questionOne==1) {
+      _PageDeuxState.healthScore -= 1;
+      _PageDeuxState.questionOne = 0;
     } else {
-      healthScore += 1;
-      _isFavorited = true;
+      _PageDeuxState.healthScore -= _PageDeuxState.questionOne;
+      _PageDeuxState.healthScore += 1;
+      _PageDeuxState.questionOne = 1;
     }
     /*
     Navigator.push(
@@ -450,8 +488,6 @@ class NeutralWidget extends StatefulWidget {
 }
 
 class _NeutralWidgetState extends State<NeutralWidget> {
-  bool _isFavorited = false;
-  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -462,28 +498,24 @@ class _NeutralWidgetState extends State<NeutralWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.brightness_1, color: Colors.yellow[600]) : Icon(Icons.brightness_1_outlined, color: Colors.yellow[300])),
+            icon: (_PageDeuxState.questionOne==2 ? Icon(Icons.brightness_1, color: Colors.yellow[600]) : Icon(Icons.brightness_1_outlined, color: Colors.yellow[300])),
             //color: Colors.red[500],
             onPressed: _toggleFavorite,
-          ),
-        ),
-        SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$healthScore'),
           ),
         ),
       ],
     );
   }
   void _toggleFavorite() {
-  setState(() {
-    if (_isFavorited) {
-      healthScore -= 2;
-      _isFavorited = false;
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+      if (_PageDeuxState.questionOne==2) {
+      _PageDeuxState.healthScore -= 2;
+      _PageDeuxState.questionOne = 0;
     } else {
-      healthScore += 2;
-      _isFavorited = true;
+      _PageDeuxState.healthScore -= _PageDeuxState.questionOne;
+      _PageDeuxState.healthScore += 2;
+      _PageDeuxState.questionOne = 2;
     }
     /*
     Navigator.push(
@@ -503,8 +535,6 @@ class HappyWidget extends StatefulWidget {
 }
 
 class _HappyWidgetState extends State<HappyWidget> {
-  bool _isFavorited = false;
-  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -515,28 +545,24 @@ class _HappyWidgetState extends State<HappyWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.brightness_1, color: Colors.green,) : Icon(Icons.brightness_1_outlined, color: Colors.green[100])),
+            icon: (_PageDeuxState.questionOne==3 ? Icon(Icons.brightness_1, color: Colors.green,) : Icon(Icons.brightness_1_outlined, color: Colors.green[100])),
             //color: Colors.red[500],
             onPressed: _toggleFavorite,
-          ),
-        ),
-        SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$healthScore'),
           ),
         ),
       ],
     );
   }
   void _toggleFavorite() {
-  setState(() {
-    if (_isFavorited) {
-      healthScore -= 3;
-      _isFavorited = false;
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+if (_PageDeuxState.questionOne==3) {
+      _PageDeuxState.healthScore -= 3;
+      _PageDeuxState.questionOne = 0;
     } else {
-      healthScore += 3;
-      _isFavorited = true;
+      _PageDeuxState.healthScore -= _PageDeuxState.questionOne;
+      _PageDeuxState.healthScore += 3;
+      _PageDeuxState.questionOne = 3;
     }
     /*
     Navigator.push(
@@ -556,8 +582,6 @@ class CrossmarkWidget extends StatefulWidget {
 }
 
 class _CrossmarkWidgetState extends State<CrossmarkWidget> {
-  bool _isFavorited = false;
-  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -568,27 +592,23 @@ class _CrossmarkWidgetState extends State<CrossmarkWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.clear, color: Colors.black) : Icon(Icons.clear, color: Colors.black26)),
+            icon: (_PageDeuxState.questionTwo==2 ? Icon(Icons.clear, color: Colors.black) : Icon(Icons.clear, color: Colors.black26)),
             onPressed: _toggleFavorite,
-          ),
-        ),
-        SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$healthScore'),
           ),
         ),
       ],
     );
   }
   void _toggleFavorite() {
-  setState(() {
-    if (_isFavorited) {
-      healthScore -= 1;
-      _isFavorited = false;
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+    if (_PageDeuxState.questionTwo==2) {
+      _PageDeuxState.healthScore -= 2;
+      _PageDeuxState.questionTwo = 0;
     } else {
-      healthScore += 1;
-      _isFavorited = true;
+      _PageDeuxState.healthScore -= _PageDeuxState.questionTwo;
+      _PageDeuxState.healthScore += 2;
+      _PageDeuxState.questionTwo = 2;
     }
     /*
        Navigator.push(
@@ -608,8 +628,6 @@ class CheckmarkWidget extends StatefulWidget {
 }
 
 class _CheckmarkWidgetState extends State<CheckmarkWidget> {
-  bool _isFavorited = false;
-  int healthScore = 0;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -620,28 +638,24 @@ class _CheckmarkWidgetState extends State<CheckmarkWidget> {
           child: IconButton(
             padding: EdgeInsets.all(0),
             alignment: Alignment.centerRight,
-            icon: (_isFavorited ? Icon(Icons.check, color: Colors.black) : Icon(Icons.check, color: Colors.black26)),
+            icon: (_PageDeuxState.questionTwo==1 ? Icon(Icons.check, color: Colors.black) : Icon(Icons.check, color: Colors.black26)),
             //color: Colors.red[500],
             onPressed: _toggleFavorite,
-          ),
-        ),
-        SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$healthScore'),
           ),
         ),
       ],
     );
   }
   void _toggleFavorite() {
-  setState(() {
-    if (_isFavorited) {
-      healthScore += 1;
-      _isFavorited = false;
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+    if (_PageDeuxState.questionTwo==1) {
+      _PageDeuxState.healthScore -= 1;
+      _PageDeuxState.questionTwo = 0;
     } else {
-      healthScore -= 1;
-      _isFavorited = true;
+      _PageDeuxState.healthScore -= _PageDeuxState.questionTwo;
+      _PageDeuxState.healthScore += 1;
+      _PageDeuxState.questionTwo = 1;
     }
     /*
       Navigator.push(
@@ -652,4 +666,108 @@ class _CheckmarkWidgetState extends State<CheckmarkWidget> {
     */
   });
 }
+}
+
+class CrossmarkWidget2 extends StatefulWidget {
+  @override
+  _CrossmarkWidget2State createState() => _CrossmarkWidget2State();
+}
+
+class _CrossmarkWidget2State extends State<CrossmarkWidget2> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_PageDeuxState.questionThree==2 ? Icon(Icons.clear, color: Colors.black) : Icon(Icons.clear, color: Colors.black26)),
+            onPressed: _toggleFavorite,
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleFavorite() {
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+    if (_PageDeuxState.questionThree==2) {
+      _PageDeuxState.healthScore -= 2;
+      _PageDeuxState.questionThree = 0;
+    } else {
+      _PageDeuxState.healthScore -= _PageDeuxState.questionThree;
+      _PageDeuxState.healthScore += 2;
+      _PageDeuxState.questionThree = 2;
+    }
+    /*
+       Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore1),
+      ));
+    */
+  });
+}
+}
+
+
+class CheckmarkWidget2 extends StatefulWidget {
+  @override
+  _CheckmarkWidget2State createState() => _CheckmarkWidget2State();
+}
+
+class _CheckmarkWidget2State extends State<CheckmarkWidget2> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: EdgeInsets.all(0),
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.centerRight,
+            icon: (_PageDeuxState.questionThree==1 ? Icon(Icons.check, color: Colors.black) : Icon(Icons.check, color: Colors.black26)),
+            //color: Colors.red[500],
+            onPressed: _toggleFavorite,
+          ),
+        ),
+      ],
+    );
+  }
+  void _toggleFavorite() {
+  var parentState = context.findAncestorStateOfType<_PageDeuxState>();
+  parentState.setState(() {
+    if (_PageDeuxState.questionThree==1) {
+      _PageDeuxState.healthScore -= 1;
+      _PageDeuxState.questionThree = 0;
+    } else {
+      _PageDeuxState.healthScore -= _PageDeuxState.questionThree;
+      _PageDeuxState.healthScore += 1;
+      _PageDeuxState.questionThree = 1;
+    }
+    /*
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageDeux(hScore: healthScore3),
+      ));
+    */
+  });
+}
+}
+
+decision(int healthScore) {
+ if(healthScore == 6 || healthScore == 7)
+          return "Merci pour avoir rempli le questionnaire! \n \nTout va bien. \n\nPassez une belle journée!";
+    else if( healthScore == 4 || healthScore == 5)
+          return "Merci pour avoir rempli le questionnaire. \n \nSoyez prudent; \n\nil est possible que vous soyez exposé à COVID19.";
+    else if(healthScore == 3)
+          return "Merci pour avoir rempli le questionnaire. \n \nAttention! \n\nIl est fort possible que vous soyez exposé à COVID19!";
+    else if(healthScore == null)
+          healthScore = 0;
+          return "";   
 }
