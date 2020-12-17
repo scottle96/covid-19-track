@@ -173,7 +173,7 @@ class PageUn extends StatelessWidget {
                       child:                   
                       Image.asset(
                         'images/logo.jpg',
-                        width:150,
+                        width:300,
                         height:60,
                         fit:BoxFit.contain,
                         //alignment: Alignment.center,
@@ -288,7 +288,7 @@ class _PageDeuxState extends State<PageDeux> {
                       child:                   
                       Image.asset(
                         'images/logo.jpg',
-                        width:75,
+                        width:300,
                         height:60,
                         fit:BoxFit.contain,
                         //alignment: Alignment.center,
@@ -762,11 +762,11 @@ class _CheckmarkWidget2State extends State<CheckmarkWidget2> {
 
 decision(int healthScore) {
  if(healthScore == 6 || healthScore == 7)
-          return "Merci pour avoir rempli le questionnaire! \n \nTout va bien. \n\nPassez une belle journée!";
+          return "Merci pour avoir rempli le questionnaire! \n\nTout va bien. \n\nPassez une belle journée!";
     else if( healthScore == 4 || healthScore == 5)
-          return "Merci pour avoir rempli le questionnaire. \n \nSoyez prudent; \n\nil est possible que vous soyez exposé à COVID19.";
+          return "Merci pour avoir rempli le questionnaire. \n\nSoyez prudent; \n\nil est possible que vous soyez exposé à COVID19.";
     else if(healthScore == 3)
-          return "Merci pour avoir rempli le questionnaire. \n \nAttention! \n\nIl est fort possible que vous soyez exposé à COVID19!";
+          return "Merci pour avoir rempli le questionnaire. \n\nAttention! \n\nIl est fort possible que vous soyez exposé à COVID19!";
     else if(healthScore == null)
           healthScore = 0;
           return "";   
